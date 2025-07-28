@@ -11,12 +11,15 @@
 #include <string>
 #include <vector>
 #include <GLFW/glfw3.h>
-#include "imgui/imgui.h"
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
+#include "imgui.h"
+#include "imgui/backends/imgui_impl_glfw.h"
+#include "imgui/backends/imgui_impl_opengl3.h"
 #include "../core/WallpaperManager.h"
 #include "../core/DisplayManager.h"
 #include "../utils/FileUtils.h"
+
+// Forward declarations
+enum class WallpaperMode;
 
 class Application {
 public:

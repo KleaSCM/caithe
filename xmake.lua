@@ -8,7 +8,7 @@ add_requires("imgui", "glfw", "stb", "nlohmann_json")
 
 target("caithe")
     set_kind("binary")
-    add_files("src/*.cpp", "src/*/*.cpp")
+    add_files("src/*.cpp", "src/*/*.cpp", "src/imgui/backends/*.cpp")
     
     -- Add packages
     add_packages("imgui", "glfw", "stb", "nlohmann_json")
