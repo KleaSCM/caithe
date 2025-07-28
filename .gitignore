@@ -1,0 +1,109 @@
+# Caithe Wallpaper Manager - Git Ignore File
+
+# Build System
+.xmake/
+build/
+zig-out/
+*.o
+*.obj
+*.exe
+*.out
+*.app
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+
+# Compiler Generated Files
+*.gch
+*.pch
+*.gcno
+*.gcda
+*.gcov
+
+# Debug Files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+*.ilk
+*.exp
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# Logs and Temporary Files
+*.log
+*.tmp
+*.temp
+*.cache
+*.pid
+*.lock
+
+# Configuration Files (if they contain sensitive data)
+config.json
+settings.json
+*.conf
+
+# Test Artifacts
+test_output/
+coverage/
+*.gcov
+*.prof
+
+# Documentation Build
+docs/_build/
+docs/html/
+docs/latex/
+
+# Package Manager
+node_modules/
+vendor/
+deps/
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup Files
+*.bak
+*.backup
+*.old
+*.orig
+
+# Archive Files
+*.tar
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# Database Files
+*.db
+*.sqlite
+*.sqlite3
+
+# Image Cache (if generated)
+cache/
+thumbnails/
+previews/
+
+# Wallpaper Test Files (if any)
+test_images/
+sample_wallpapers/
+
+
