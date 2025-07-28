@@ -4,13 +4,7 @@
  * File: FileUtils.h
  * Description: File utility functions for wallpaper management with path normalization algorithms
  * 
- * Mathematical Foundation:
- * - Path normalization: resolves relative paths using dot notation (., ..) elimination
- * - File extension validation: case-insensitive string matching with O(n) complexity
- * - Directory traversal: depth-first search for recursive file discovery
- * - Path canonicalization: eliminates symbolic links and redundant separators
  * 
- * Note: These mathematical algorithms are implemented using std::filesystem
  */
 
 #pragma once

@@ -33,6 +33,7 @@ zig-out/
 # IDE and Editor Files
 .vscode/
 .idea/
+.cursor/
 *.swp
 *.swo
 *~
@@ -107,3 +108,4 @@ test_images/
 sample_wallpapers/
 
 
+.gitignore
