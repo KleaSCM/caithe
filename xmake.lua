@@ -139,6 +139,25 @@ target("test_cache_implementation")
     -- Set output directory
     set_targetdir("build")
 
+target("test_config_manager")
+    set_kind("binary")
+    add_files("Tests/test_config_manager.cpp", "src/utils/*.cpp")
+    
+    -- Add packages (without imgui for testing)
+    add_packages("nlohmann_json")
+    
+    -- Add system libraries for Linux
+    add_syslinks("X11", "Xrandr", "Xinerama", "dl", "pthread")
+    
+    -- Add include directories
+    add_includedirs("src")
+    
+    -- Add compilation flags
+    add_cxflags("-Wall", "-Wextra", "-O2")
+    
+    -- Set output directory
+    set_targetdir("build")
+
 
 
 --

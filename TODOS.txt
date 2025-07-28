@@ -57,8 +57,6 @@
 - ✅ Multiple build targets for different test scenarios
 - ✅ Professional compilation flags and optimization
 
-## 🚧 IN PROGRESS
-
 ### GUI Implementation
 - ✅ ImGui integration (fully implemented with backend files)
 - ✅ Main application window and UI framework
@@ -68,55 +66,93 @@
 - ✅ Display management panel
 - ✅ Tabbed interface with Wallpapers, Displays, and Settings tabs
 
+### Configuration System
+- ✅ JSON configuration file implementation (fully functional)
+- ✅ Settings persistence (window position, wallpaper paths, etc.)
+- ✅ ConfigManager class with type-safe access
+- ✅ Default configuration generation
+- ✅ Configuration validation and error handling
+- ✅ Settings panel integration with live updates
+- ✅ Auto-save on application exit
+
 ## 📋 REMAINING TASKS
 
 ### High Priority
 
-#### 1. GUI Completion
-- [ ] Fix ImGui header includes and build issues
-- [ ] Implement main application window with ImGui
-- [ ] Create wallpaper browser interface
-- [ ] Add wallpaper preview functionality
-- [ ] Implement settings panel with save/load
-- [ ] Add about dialog with proper information
+#### 1. Error Feedback UI
+- [ ] Display WallpaperManager::getLastError() inline in the ImGui panels
+- [ ] Non-blocking notifications (ImGui "toast" messages)
+- [ ] Error status indicators in each panel
+- [ ] Detailed error reporting with suggestions
 
-#### 2. Wallpaper Browser
-- [ ] Directory browsing and file listing
-- [ ] Thumbnail generation for image previews
-- [ ] File filtering by supported image formats
-- [ ] Drag and drop support for images
-- [ ] Recent wallpapers list
-- [ ] Favorites/wallpaper collection management
+#### 2. Multi-Display Support Improvements
+- [ ] Implement per-display wallpaper settings (mode, scale, rotation)
+- [ ] Add "Apply to all" vs. "Apply individually" toggles
+- [ ] Per-display wallpaper mode selection
+- [ ] Display-specific wallpaper paths
 
-#### 3. Configuration System
-- [ ] JSON configuration file implementation
-- [ ] Settings persistence (window position, wallpaper paths, etc.)
-- [ ] Default wallpaper directory configuration
-- [ ] Wallpaper rotation settings
-- [ ] Display-specific preferences
-- [ ] Theme and appearance settings
+#### 3. Wallpaper Mode Improvements
+- [ ] Add Fill, Fit, Stretch, Center, Tile, Custom Scale (%) modes
+- [ ] Custom scale percentage input
+- [ ] Mode preview in UI
+- [ ] Mode-specific settings (tile spacing, etc.)
 
 ### Medium Priority
 
-#### 4. Advanced Features
-- [ ] Fuzzy finder for wallpaper search
-- [ ] Wallpaper rotation with time intervals
-- [ ] Multiple wallpaper directories
-- [ ] Add/remove directory functionality
-- [ ] Wallpaper slideshow mode
-- [ ] Keyboard shortcuts and hotkeys
+#### 4. Live Preview Panel
+- [ ] Show thumbnails of selected images (load via stb_image)
+- [ ] Show per-display preview boxes with current wallpaper
+- [ ] Thumbnail generation and caching
+- [ ] Real-time preview updates
 
-#### 5. System Integration
-- [ ] Autostart on system boot
-- [ ] Background daemon mode
-- [ ] System tray integration
-- [ ] Notification system for wallpaper changes
-- [ ] Desktop environment detection
-- [ ] Multi-monitor support improvements
+#### 5. Wallpaper Gallery
+- [ ] Build an indexed gallery view of ~/.config/caithe/wallpapers with selectable thumbnails
+- [ ] Allow multi-select (shift/ctrl-click) for rotating sets
+- [ ] Gallery navigation and search
+- [ ] Thumbnail grid layout with customizable size
+
+#### 6. Drag & Drop
+- [ ] Drag wallpapers from a file browser into Caithe's ImGui window
+- [ ] Drag wallpaper thumbnails between display panels to assign them
+- [ ] Drop zone indicators
+- [ ] Drag preview and feedback
+
+#### 7. Slideshow Mode
+- [ ] Interval-based rotation (1m / 5m / 10m / custom)
+- [ ] Per-display or global slideshow timers
+- [ ] Slideshow controls (play/pause/stop)
+- [ ] Transition effects between wallpapers
+
+#### 8. Profile Manager
+- [ ] Save/load wallpaper profiles as JSON (profile1.json, work.json, etc.)
+- [ ] One-click switch between setups
+- [ ] Profile import/export functionality
+- [ ] Profile templates and presets
 
 ### Low Priority
 
-#### 6. Performance & Polish
+#### 9. CLI Integration
+- [ ] caithe set <path> --display DP-1 --mode fill
+- [ ] caithe profile load work
+- [ ] Command-line argument parsing
+- [ ] CLI help and documentation
+
+#### 10. Live Hyprland Sync
+- [ ] Watch for display changes (hyprctl monitors -j) and auto-refresh
+- [ ] Real-time display detection
+- [ ] Automatic UI updates on display changes
+
+#### 11. Hotplug Events
+- [ ] Automatically reapply wallpapers when a monitor is added or removed
+- [ ] Monitor hotplug detection
+- [ ] Automatic wallpaper redistribution
+
+#### 12. Fast Startup
+- [ ] Use an async preload thread for scanning image directories
+- [ ] Background thumbnail generation
+- [ ] Startup performance optimization
+
+#### 13. Performance & Polish
 - [ ] Image caching and optimization
 - [ ] Lazy loading for large wallpaper directories
 - [ ] Memory usage optimization
@@ -124,18 +160,31 @@
 - [ ] Error recovery and resilience
 - [ ] Logging system for debugging
 
-#### 7. Additional Features
-- [ ] Wallpaper effects and filters
-- [ ] Custom wallpaper modes
-- [ ] Network wallpaper sources
-- [ ] Wallpaper sharing functionality
-- [ ] Backup and restore settings
-- [ ] Plugin system for extensions
+### Advanced Features (Optional)
+
+#### 14. Shader Effects (Optional Insanity)
+- [ ] Blur, brightness, or tint filters applied in real time (OpenGL fragment shader overlay)
+- [ ] Real-time wallpaper effects
+- [ ] Custom shader support
+- [ ] Effect parameter controls
+
+#### 15. System Integration
+- [ ] Autostart on system boot
+- [ ] Background daemon mode
+- [ ] System tray integration
+- [ ] Notification system for wallpaper changes
+- [ ] Desktop environment detection
+- [ ] Multi-monitor support improvements
+
+#### 16. Packaging
+- [ ] Arch AUR package (caithe-git)
+- [ ] AppImage and Flatpak build
+- [ ] Installation scripts
+- [ ] Package dependencies and metadata
 
 ## 🐛 KNOWN ISSUES
 
 ### Build Issues
-- [ ] ImGui backend headers not found (need proper include paths)
 - [ ] Some unused parameter warnings in DisplayManager
 - [ ] Missing FileUtils::normalizePath implementation
 
@@ -143,30 +192,5 @@
 - [ ] Config directory creation sometimes fails
 - [ ] Image validation returns false for non-existent test files (expected behavior)
 - [ ] Hyprland integration requires image preloading
-
-## 🎯 NEXT STEPS
-
-1. **Fix ImGui Integration**: Resolve header include issues and complete GUI implementation
-2. **Implement Wallpaper Browser**: Create the main user interface for browsing and selecting wallpapers
-3. **Add Configuration System**: Implement JSON settings persistence
-4. **Polish User Experience**: Add previews, fuzzy finder, and advanced features
-5. **System Integration**: Add autostart and background daemon functionality
-
-## 📊 PROGRESS SUMMARY
-
-- **Core Engine**: 100% Complete ✅
-- **Display Management**: 100% Complete ✅
-- **File Operations**: 100% Complete ✅
-- **Hyprland Integration**: 100% Complete ✅
-- **Testing Suite**: 100% Complete ✅
-- **Build System**: 100% Complete ✅
-- **GUI Implementation**: 100% Complete ✅
-- **Configuration System**: 0% Complete 📋
-- **Advanced Features**: 0% Complete 📋
-
-**Overall Progress: ~85% Complete** 🎉
-
-The core wallpaper management engine and GUI are fully functional and production-ready. The main remaining work is configuration system and advanced features. 
-
 
 

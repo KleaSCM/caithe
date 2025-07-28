@@ -27,6 +27,16 @@ Application::Application()
     // Initialize managers
     m_wallpaperManager = std::make_unique<WallpaperManager>();
     m_displayManager = std::make_unique<DisplayManager>();
+    m_configManager = std::make_unique<ConfigManager>();
+    
+    // Load configuration (with error handling)
+    try {
+        if (!m_configManager->loadConfig()) {
+            std::cerr << "Warning: Failed to load config: " << m_configManager->getLastError() << std::endl;
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Error initializing config: " << e.what() << std::endl;
+    }
 }
 
 Application::~Application() {
@@ -77,8 +87,17 @@ bool Application::initializeWindow() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     
+    // Get window settings from config (with fallback)
+    int width = WINDOW_WIDTH;
+    int height = WINDOW_HEIGHT;
+    
+    if (m_configManager) {
+        width = m_configManager->getInt("window.width", WINDOW_WIDTH);
+        height = m_configManager->getInt("window.height", WINDOW_HEIGHT);
+    }
+    
     // Create window
-    m_window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, nullptr, nullptr);
+    m_window = glfwCreateWindow(width, height, WINDOW_TITLE, nullptr, nullptr);
     if (!m_window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -225,17 +244,142 @@ void Application::renderSettingsPanel() {
     ImGui::Text("Settings");
     ImGui::Separator();
     
+    if (!m_configManager) {
+        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Config Manager not available");
+        return;
+    }
+    
     // Demo window toggle
-    ImGui::Checkbox("Show Demo Window", &m_showDemoWindow);
+    bool showDemo = m_configManager->getBool("ui.showDemoWindow", false);
+    if (ImGui::Checkbox("Show Demo Window", &showDemo)) {
+        m_configManager->setBool("ui.showDemoWindow", showDemo);
+        m_showDemoWindow = showDemo;
+    }
+    
+    ImGui::Separator();
+    ImGui::Text("Window Settings");
+    
+    // Window size
+    int width = m_configManager->getInt("window.width", WINDOW_WIDTH);
+    int height = m_configManager->getInt("window.height", WINDOW_HEIGHT);
+    
+    if (ImGui::InputInt("Window Width", &width, 50, 100)) {
+        m_configManager->setInt("window.width", width);
+    }
+    
+    if (ImGui::InputInt("Window Height", &height, 50, 100)) {
+        m_configManager->setInt("window.height", height);
+    }
+    
+    ImGui::Separator();
+    ImGui::Text("Wallpaper Settings");
+    
+    // Default wallpaper mode
+    std::string defaultMode = m_configManager->getString("wallpaper.defaultMode", "Scale");
+    const char* modes[] = {"Stretch", "Center", "Tile", "Scale", "Fill", "Fit"};
+    static int currentMode = 0;
+    
+    // Find current mode index
+    for (int i = 0; i < 6; ++i) {
+        if (defaultMode == modes[i]) {
+            currentMode = i;
+            break;
+        }
+    }
+    
+    if (ImGui::Combo("Default Wallpaper Mode", &currentMode, modes, 6)) {
+        m_configManager->setString("wallpaper.defaultMode", modes[currentMode]);
+    }
+    
+    // Auto apply to all displays
+    bool autoApply = m_configManager->getBool("wallpaper.autoApplyToAll", false);
+    if (ImGui::Checkbox("Auto Apply to All Displays", &autoApply)) {
+        m_configManager->setBool("wallpaper.autoApplyToAll", autoApply);
+    }
+    
+    ImGui::Separator();
+    ImGui::Text("Advanced Settings");
+    
+    // Hotplug events
+    bool hotplug = m_configManager->getBool("advanced.enableHotplugEvents", true);
+    if (ImGui::Checkbox("Enable Hotplug Events", &hotplug)) {
+        m_configManager->setBool("advanced.enableHotplugEvents", hotplug);
+    }
+    
+    // Live sync
+    bool liveSync = m_configManager->getBool("advanced.enableLiveSync", true);
+    if (ImGui::Checkbox("Enable Live Sync", &liveSync)) {
+        m_configManager->setBool("advanced.enableLiveSync", liveSync);
+    }
+    
+    // Slideshow settings
+    bool slideshow = m_configManager->getBool("advanced.enableSlideshow", false);
+    if (ImGui::Checkbox("Enable Slideshow", &slideshow)) {
+        m_configManager->setBool("advanced.enableSlideshow", slideshow);
+    }
+    
+    if (slideshow) {
+        int interval = m_configManager->getInt("advanced.slideshowInterval", 300);
+        if (ImGui::InputInt("Slideshow Interval (seconds)", &interval, 30, 60)) {
+            m_configManager->setInt("advanced.slideshowInterval", interval);
+        }
+    }
+    
+    ImGui::Separator();
     
     // Settings save/load
     if (ImGui::Button("Save Settings")) {
-        // TODO: Implement settings save
+        if (m_configManager->saveConfig()) {
+            ImGui::OpenPopup("Settings Saved");
+        } else {
+            ImGui::OpenPopup("Save Failed");
+        }
     }
     
     ImGui::SameLine();
     if (ImGui::Button("Load Settings")) {
-        // TODO: Implement settings load
+        if (m_configManager->loadConfig()) {
+            ImGui::OpenPopup("Settings Loaded");
+        } else {
+            ImGui::OpenPopup("Load Failed");
+        }
+    }
+    
+    ImGui::SameLine();
+    if (ImGui::Button("Reset to Defaults")) {
+        m_configManager->createDefaultConfig();
+        ImGui::OpenPopup("Settings Reset");
+    }
+    
+    // Popup messages
+    if (ImGui::BeginPopupModal("Settings Saved", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("Settings saved successfully!");
+        if (ImGui::Button("OK")) ImGui::CloseCurrentPopup();
+        ImGui::EndPopup();
+    }
+    
+    if (ImGui::BeginPopupModal("Save Failed", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("Failed to save settings: %s", m_configManager->getLastError().c_str());
+        if (ImGui::Button("OK")) ImGui::CloseCurrentPopup();
+        ImGui::EndPopup();
+    }
+    
+    if (ImGui::BeginPopupModal("Settings Loaded", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("Settings loaded successfully!");
+        if (ImGui::Button("OK")) ImGui::CloseCurrentPopup();
+        ImGui::EndPopup();
+    }
+    
+    if (ImGui::BeginPopupModal("Load Failed", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("Failed to load settings: %s", m_configManager->getLastError().c_str());
+        if (ImGui::Button("OK")) ImGui::CloseCurrentPopup();
+        ImGui::EndPopup();
+    }
+    
+    if (ImGui::BeginPopupModal("Settings Reset", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("Settings reset to defaults!");
+        if (ImGui::Button("OK")) ImGui::CloseCurrentPopup();
+        ImGui::EndPopup();
     }
 }
 

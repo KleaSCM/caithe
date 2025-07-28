@@ -17,6 +17,7 @@
 #include "../core/WallpaperManager.h"
 #include "../core/DisplayManager.h"
 #include "../utils/FileUtils.h"
+#include "../utils/ConfigManager.h"
 
 // Forward declarations
 enum class WallpaperMode;
@@ -57,6 +58,7 @@ private:
     GLFWwindow* m_window;
     std::unique_ptr<WallpaperManager> m_wallpaperManager;
     std::unique_ptr<DisplayManager> m_displayManager;
+    std::unique_ptr<ConfigManager> m_configManager;
     
     // UI state
     bool m_showDemoWindow;
